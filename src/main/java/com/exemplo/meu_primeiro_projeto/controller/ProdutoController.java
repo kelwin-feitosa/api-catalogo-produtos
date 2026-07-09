@@ -2,11 +2,16 @@ package com.exemplo.meu_primeiro_projeto.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exemplo.meu_primeiro_projeto.model.Produto;
-import com.exemplo.meu_primeiro_projeto.repository.ProdutoRepository;
+import com.exemplo.meu_primeiro_projeto.dto.ProdutoRequisicao;
+import com.exemplo.meu_primeiro_projeto.dto.ProdutoResposta;
+import com.exemplo.meu_primeiro_projeto.service.ProdutoService;
+
+import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,44 +19,48 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @RestController
 @RequestMapping("/api/produtos")
 public class ProdutoController {
     
-    private final ProdutoRepository repository;
+    private final ProdutoService service;
 
-    public ProdutoController(ProdutoRepository repository) {
-        this.repository = repository;
+    public ProdutoController(ProdutoService service) {
+        this.service = service;
     }
 
-    @GetMapping("/produtos")
-    public List<Produto> obterProdutos() {
-        return repository.findAll();
+    @GetMapping
+    public List<ProdutoResposta> obterProdutos() {
+        return service.listarProdutos();
     }
 
-    @PostMapping("/produto")
-    public String criarProduto(@RequestBody Produto novoProduto) {
-        repository.save(novoProduto);
-        return "Produto recebido com sucesso: " + novoProduto.getNome() + " - R$" + novoProduto.getPreco();
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutoResposta> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    @DeleteMapping("/produto/{id}")
-    public void deletarProduto(@PathVariable Long id) {
-        repository.deleteById(id);
-    }
-
-    @PutMapping("/produto/{id}")
-    public Produto atualizarProduto(@PathVariable Long id, @RequestBody Produto produtoAtualizado) {
-        Produto produtoAntigo = repository.findById(id).orElseThrow();
+    @PostMapping
+    public ResponseEntity<ProdutoResposta> criarProduto(@Valid @RequestBody ProdutoRequisicao novoProduto) {
         
-        produtoAntigo.setNome(produtoAtualizado.getNome());
-        produtoAntigo.setPreco(produtoAtualizado.getPreco());
+        ProdutoResposta resposta = service.criarProduto(novoProduto);
 
-        return repository.save(produtoAntigo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
     }
+
+    @PutMapping("/{id}")
+    public ProdutoResposta atualizarProduto(@PathVariable Long id, @Valid @RequestBody ProdutoRequisicao produtoAtualizado) {
+        return service.atualizarProduto(id, produtoAtualizado);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarProduto(@PathVariable Long id) {
+        service.deletarProduto(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    
     
 }
 

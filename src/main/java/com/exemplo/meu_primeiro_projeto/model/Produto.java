@@ -1,12 +1,14 @@
 package com.exemplo.meu_primeiro_projeto.model;
 
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class Produto {
@@ -15,26 +17,42 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String nome;
-    
-    @Positive
-    private double preco;
+    private BigDecimal preco;
+    private String descricao;
+    private Integer quantidadeEstoque;
+    private LocalDateTime dataCadastro;
 
     public Produto() {}
 
-    public Produto(String nome, double preco) {
+    public Produto(String nome, BigDecimal preco, String descricao, Integer quantidadeEstoque) {
         this.nome = nome;
         this.preco = preco;
+        this.descricao = descricao;
+        this.quantidadeEstoque = quantidadeEstoque;
     }
 
+    @PrePersist
+    public void prePersist() {
+        dataCadastro = LocalDateTime.now();
+    }
     
     public Long getId() { return this.id; }
-    public void setId(long id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
 
-    public double getPreco() { return preco; }
-    public void setPreco(double preco) { this.preco = preco; }
+    public BigDecimal getPreco() { return preco; }
+    public void setPreco(BigDecimal preco) { this.preco = preco; }
+
+    public String getDescricao() { return descricao; }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
+
+    public Integer getQuantidadeEstoque() { return quantidadeEstoque; }
+    public void setQuantidadeEstoque(Integer quantidadeEstoque) { this.quantidadeEstoque = quantidadeEstoque; }
+
+    public LocalDateTime getDataCadastro() { return this.dataCadastro; }
+    public void setDataCadastro(LocalDateTime dataCadastro) { this.dataCadastro = dataCadastro; }
+
 }
