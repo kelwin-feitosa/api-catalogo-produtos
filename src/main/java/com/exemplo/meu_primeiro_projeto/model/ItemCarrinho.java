@@ -9,41 +9,44 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class ItemCompra { //Itens da compra com o fornecedor
+public class ItemCarrinho {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private Produto produto;
+    private Carrinho carrinho;
 
     @ManyToOne
-    private Compra compra;
+    private Produto produto;
 
     private Integer quantidade;
-    private BigDecimal precoCompra;
+    private BigDecimal precoUnitario;
 
-    protected ItemCompra() {}
 
-    public ItemCompra(Integer quantidade, BigDecimal precoCompra) {
+    protected ItemCarrinho() { }
+
+    public ItemCarrinho(Produto produto, Integer quantidade, BigDecimal precoUnitario) {
+        this.produto = produto;
         this.quantidade = quantidade;
-        this.precoCompra = precoCompra;
+        this.precoUnitario = precoUnitario;
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
+    public Carrinho getCarrinho() { return carrinho; }
+    public void setCarrinho(Carrinho carrinho) { this.carrinho = carrinho; }
+
     public Produto getProduto() { return produto; }
     public void setProduto(Produto produto) { this.produto = produto; }
-
-    public Compra getCompra() { return compra; }
-    public void setCompra(Compra compra) { this.compra = compra; }
 
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
 
-    public BigDecimal getPrecoCompra() { return precoCompra; }
-    public void setPrecoCompra(BigDecimal precoCompra) { this.precoCompra = precoCompra; }
+    public BigDecimal getPrecoUnitario() { return precoUnitario; }
+    public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }
 
+    
 }

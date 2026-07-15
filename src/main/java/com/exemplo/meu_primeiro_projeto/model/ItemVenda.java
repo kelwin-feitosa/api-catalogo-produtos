@@ -6,13 +6,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-public class ItemVenda {
+public class ItemVenda { //itens da lista de venda do cliente
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    private Produto produto;
+
+    @ManyToOne
+    private Venda venda;
+
     private Integer quantidade;
     private BigDecimal precoUnitario;
     private BigDecimal subtotal;
@@ -27,6 +35,12 @@ public class ItemVenda {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Produto getProduto() { return produto; }
+    public void setProduto(Produto produto) { this.produto = produto; }
+
+    public Venda getVenda() { return venda; }
+    public void setVenda(Venda venda) { this.venda = venda; }
 
     public Integer getQuantidade() { return quantidade; }
     public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
