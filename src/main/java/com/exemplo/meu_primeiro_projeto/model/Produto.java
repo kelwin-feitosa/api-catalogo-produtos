@@ -8,14 +8,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
 @Entity
-public class Produto {
+public class Produto { //Os produtos
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    private Categoria categoria;
 
     private String nome;
     private BigDecimal preco;
@@ -23,7 +27,7 @@ public class Produto {
     private Integer quantidadeEstoque;
     private LocalDateTime dataCadastro;
 
-    public Produto() {}
+    protected Produto() {}
 
     public Produto(String nome, BigDecimal preco, String descricao, Integer quantidadeEstoque) {
         this.nome = nome;
@@ -39,6 +43,9 @@ public class Produto {
     
     public Long getId() { return this.id; }
     public void setId(Long id) { this.id = id; }
+
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
