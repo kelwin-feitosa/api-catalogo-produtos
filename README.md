@@ -1,6 +1,8 @@
-# 📦 API REST de Gerenciamento de Produtos
+# 🛒 API REST para Gerenciamento de Supermercado
 
-API REST desenvolvida com **Java 21** e **Spring Boot 3** para gerenciamento de um catálogo de produtos. O projeto foi criado com o objetivo de aplicar boas práticas de desenvolvimento backend, utilizando arquitetura em camadas, validação de dados, tratamento global de exceções e persistência com Spring Data JPA.
+API REST desenvolvida com **Java 21** e **Spring Boot 3** com o objetivo de simular o gerenciamento de um supermercado. O projeto está sendo desenvolvido para aplicar boas práticas de desenvolvimento backend utilizando arquitetura em camadas, Spring Data JPA, Jakarta Validation e persistência de dados.
+
+O sistema contempla o gerenciamento de **produtos, categorias, clientes, fornecedores, carrinhos de compras, compras e vendas**, sendo implementado de forma incremental.
 
 ---
 
@@ -12,12 +14,13 @@ API REST desenvolvida com **Java 21** e **Spring Boot 3** para gerenciamento de 
 - Jakarta Validation
 - H2 Database
 - Maven
+- Git
 
 ---
 
 # 🏗️ Arquitetura
 
-A aplicação foi organizada seguindo o padrão em camadas:
+A aplicação segue uma arquitetura em camadas:
 
 - **Controller** → expõe os endpoints REST.
 - **Service** → contém as regras de negócio.
@@ -28,61 +31,81 @@ A aplicação foi organizada seguindo o padrão em camadas:
 
 ---
 
-# 📋 Funcionalidades
+# 📂 Modelagem do Sistema
 
-- ✅ Cadastro de produtos
-- ✅ Listagem de todos os produtos
-- ✅ Busca de produto por ID
-- ✅ Atualização de produtos
-- ✅ Remoção de produtos
-- ✅ Validação dos dados recebidos
-- ✅ Tratamento global de exceções
-- ✅ Respostas padronizadas para erros
+O sistema é composto pelas seguintes entidades:
+
+- Categoria
+- Produto
+- Cliente
+- Fornecedor
+- Carrinho
+- ItemCarrinho
+- Compra
+- ItemCompra
+- Venda
+- ItemVenda
+
+Relacionamentos principais:
+
+- Uma categoria possui vários produtos.
+- Um cliente possui um carrinho.
+- Um carrinho possui vários itens.
+- Uma compra pertence a um fornecedor.
+- Uma compra possui vários itens.
+- Uma venda pertence a um cliente.
+- Uma venda possui vários itens.
 
 ---
 
-# 📦 Estrutura da entidade Produto
+# 📋 Funcionalidades
 
-| Campo | Tipo |
-|-------|------|
-| id | Long |
-| nome | String |
-| preco | BigDecimal |
-| descricao | String |
-| quantidadeEstoque | Integer |
-| dataCadastro | LocalDateTime |
+## Implementadas
+
+- ✅ Modelagem das entidades JPA
+- ✅ Relacionamentos entre entidades
+- ✅ DTOs de Request e Response
+- ✅ Validação utilizando Jakarta Validation
+- ✅ CRUD de produtos
+- ✅ Tratamento global de exceções
+
+## Em desenvolvimento
+
+- 🚧 CRUD de categorias
+- 🚧 CRUD de clientes
+- 🚧 CRUD de fornecedores
+- 🚧 Gerenciamento de carrinhos
+- 🚧 Registro de compras
+- 🚧 Registro de vendas
+- 🚧 Atualização automática do estoque
 
 ---
 
 # 🛡️ Validação
 
-Os dados enviados são validados utilizando Jakarta Validation.
+Os dados recebidos pela API são validados utilizando **Jakarta Validation**.
 
-Exemplos:
+Exemplos de validações implementadas:
 
-- Nome obrigatório
-- Preço obrigatório
-- Preço maior ou igual a zero
-- Estoque obrigatório
-- Estoque maior ou igual a zero
+- Campos obrigatórios
+- E-mail válido
+- CNPJ com formato correto
+- Valores positivos
+- Estoque não negativo
+- Tamanho máximo para textos
 
 ---
 
-# ❌ Tratamento de erros
+# ❌ Tratamento de Erros
 
-A API responde mensagens padronizadas para situações como:
-
-- Produto inexistente
-- Dados inválidos
-- JSON malformado
-- Erros internos
+A API possui tratamento global de exceções para retornar respostas padronizadas.
 
 Exemplo:
 
 ```json
 {
   "mensagem": "Dados enviados não passam nas regras de validação.",
-  "detalhes": "O preço não pode ser negativo.",
+  "detalhes": "O preço deve ser maior que zero.",
   "timestamp": "2026-07-09T20:05:32"
 }
 ```
@@ -91,30 +114,35 @@ Exemplo:
 
 # 🌐 Endpoints
 
+Atualmente a API possui endpoints para gerenciamento de produtos.
+
 | Método | Endpoint | Descrição |
 |---------|----------|-----------|
 | GET | /api/produtos | Lista todos os produtos |
-| GET | /api/produtos/{id} | Busca um produto pelo ID |
+| GET | /api/produtos/{id} | Busca um produto por ID |
 | POST | /api/produtos | Cadastra um produto |
 | PUT | /api/produtos/{id} | Atualiza um produto |
 | DELETE | /api/produtos/{id} | Remove um produto |
 
+Novos endpoints serão adicionados conforme o desenvolvimento das demais funcionalidades.
+
 ---
 
-# 📥 Exemplo de requisição
+# 📥 Exemplo de Requisição
 
 ```json
 {
   "nome": "Teclado Mecânico RGB",
   "preco": 299.90,
   "descricao": "Teclado mecânico ABNT2 com iluminação RGB",
-  "quantidadeEstoque": 15
+  "quantidadeEstoque": 15,
+  "categoriaId": 1
 }
 ```
 
 ---
 
-# 📤 Exemplo de resposta
+# 📤 Exemplo de Resposta
 
 ```json
 {
@@ -122,6 +150,35 @@ Exemplo:
   "nome": "Teclado Mecânico RGB",
   "preco": 299.90,
   "descricao": "Teclado mecânico ABNT2 com iluminação RGB",
-  "quantidadeEstoque": 15
+  "quantidadeEstoque": 15,
+  "categoriaId": 1,
+  "dataCadastro": "2026-07-15T14:30:52"
 }
 ```
+
+---
+
+# 🎯 Objetivos do Projeto
+
+Este projeto tem como objetivo aprofundar conhecimentos em:
+
+- Spring Boot
+- Spring Data JPA
+- Arquitetura em camadas
+- Modelagem de banco de dados relacional
+- DTOs
+- Validação de dados
+- Tratamento de exceções
+- Boas práticas no desenvolvimento de APIs REST
+
+---
+
+# 🚀 Próximos Passos
+
+- Implementar Services
+- Implementar Controllers
+- Implementar CRUD completo de todas as entidades
+- Atualizar estoque automaticamente em compras e vendas
+- Adicionar documentação com Swagger/OpenAPI
+- Criar testes unitários
+- Migrar do H2 para PostgreSQL
