@@ -18,7 +18,7 @@ public class Produto { //Os produtos
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private Categoria categoria;
 
     private String nome;
@@ -29,11 +29,12 @@ public class Produto { //Os produtos
 
     protected Produto() {}
 
-    public Produto(String nome, BigDecimal preco, String descricao, Integer quantidadeEstoque) {
+    public Produto(String nome, BigDecimal preco, String descricao, Integer quantidadeEstoque, Categoria categoria) {
         this.nome = nome;
         this.preco = preco;
         this.descricao = descricao;
         this.quantidadeEstoque = quantidadeEstoque;
+        this.categoria = categoria;
     }
 
     @PrePersist
