@@ -2,8 +2,8 @@ package com.exemplo.meu_primeiro_projeto.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.exemplo.meu_primeiro_projeto.dto.ProdutoRequisicao;
-import com.exemplo.meu_primeiro_projeto.dto.ProdutoResposta;
+import com.exemplo.meu_primeiro_projeto.dto.ProdutoRequest;
+import com.exemplo.meu_primeiro_projeto.dto.ProdutoResponse;
 import com.exemplo.meu_primeiro_projeto.service.ProdutoService;
 
 import jakarta.validation.Valid;
@@ -31,26 +31,26 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public List<ProdutoResposta> obterProdutos() {
+    public List<ProdutoResponse> obterProdutos() {
         return service.listarProdutos();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProdutoResposta> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<ProdutoResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
     @PostMapping
-    public ResponseEntity<ProdutoResposta> criarProduto(@Valid @RequestBody ProdutoRequisicao novoProduto) {
+    public ResponseEntity<ProdutoResponse> criarProduto(@Valid @RequestBody ProdutoRequest novoProduto) {
         
-        ProdutoResposta resposta = service.criarProduto(novoProduto);
+        ProdutoResponse Response = service.criarProduto(novoProduto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Response);
     }
 
     @PutMapping("/{id}")
-    public ProdutoResposta atualizarProduto(@PathVariable Long id, @Valid @RequestBody ProdutoRequisicao produtoAtualizado) {
-        return service.atualizarProduto(id, produtoAtualizado);
+    public ResponseEntity<ProdutoResponse> atualizarProduto(@PathVariable Long id, @Valid @RequestBody ProdutoRequest produtoAtualizado) {
+        return ResponseEntity.ok(service.atualizarProduto(id, produtoAtualizado));
     }
     
     @DeleteMapping("/{id}")
