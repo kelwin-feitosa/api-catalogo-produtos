@@ -13,12 +13,23 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GerenciadorDeExcecoes {
 
     @ExceptionHandler(ProdutoNaoEncontradoException.class)
-    public ResponseEntity<RespostaErro> tratarNaoEncontrado(ProdutoNaoEncontradoException ex) {
+    public ResponseEntity<RespostaErro> tratarProdutoNaoEncontrado(ProdutoNaoEncontradoException ex) {
         RespostaErro erro = new RespostaErro(
             "Produto não encontrado.",
-            "O ID informado não corresponde a nenhum produto no catálogo.",
+            ex.getMessage(),
             LocalDateTime.now()
         );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+    }
+
+    @ExceptionHandler(CategoriaNaoEncontradaException.class)
+    public ResponseEntity<RespostaErro> tratarCategoriaNaoEncontrada(CategoriaNaoEncontradaException ex) {
+        RespostaErro erro = new RespostaErro(
+            "Categoria não encontrada",
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
