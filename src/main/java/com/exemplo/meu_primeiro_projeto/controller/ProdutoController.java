@@ -31,8 +31,8 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public List<ProdutoResponse> obterProdutos() {
-        return service.listarProdutos();
+    public ResponseEntity<List<ProdutoResponse>> obterProdutos() {
+        return ResponseEntity.ok(service.listarProdutos());
     }
 
     @GetMapping("/{id}")
