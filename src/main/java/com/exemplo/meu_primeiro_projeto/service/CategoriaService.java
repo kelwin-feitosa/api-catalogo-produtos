@@ -30,8 +30,8 @@ public class CategoriaService {
     public CategoriaResponse criarCategoria(CategoriaRequest request) {
         verificarDuplicidade(request); //Verifica se não existe um igual
 
-        Categoria categoriaModel = converterParaCategoria(request);
-        Categoria categoriaSalva = repository.save(categoriaModel);
+        Categoria categoria = converterParaCategoria(request);
+        Categoria categoriaSalva = repository.save(categoria);
 
         return converterParaResponse(categoriaSalva);
     }
@@ -45,9 +45,7 @@ public class CategoriaService {
         categoria.setNome(request.nome());
         categoria.setDescricao(request.descricao());
 
-        Categoria categoriaAtualizada = repository.save(categoria);
-
-        return converterParaResponse(categoriaAtualizada);
+        return converterParaResponse(repository.save(categoria));
     }
 
     public CategoriaResponse buscarPorId(Long id) {
@@ -62,7 +60,6 @@ public class CategoriaService {
                 "Não é possível excluir uma categoria com produtos vinculados."
             );
         }
-
         repository.delete(categoria);
     }
 
@@ -93,7 +90,7 @@ public class CategoriaService {
     }
 
     private void verificarDuplicidade(Categoria categoria, CategoriaRequest request) {
-        if(!categoria.getNome().equals(request.nome())) { //categoria é o que vai ser mudado pelo request
+        if(!categoria.getNome().equals(request.nome())) {
             verificarDuplicidade(request);
         }
     }
