@@ -35,30 +35,27 @@ public class ProdutoService {
 
     public ProdutoResponse criarProduto(ProdutoRequest request) {
         verificarDuplicidade(request);
-        Categoria categoria = buscarCategoria(request.categoriaId());
 
-        Produto produto = converterParaProduto(request, categoria);
-        Produto salvo = repository.save(produto);
+        Produto salvo = repository.save(converterParaProduto(request));
 
         return converterParaResponse(salvo);
     }
 
-    public ProdutoResponse atualizarProduto(Long id, ProdutoRequest atualizandoProduto) {
+    public ProdutoResponse atualizarProduto(Long id, ProdutoRequest request) {
         Produto produto = buscarEntidade(id);
-        verificarDuplicidade(produto, atualizandoProduto);
-        
-        produto.setNome(atualizandoProduto.nome());
-        produto.setPreco(atualizandoProduto.preco());
-        produto.setDescricao(atualizandoProduto.descricao());
-        produto.setQuantidadeEstoque(atualizandoProduto.quantidadeEstoque());
-        Categoria categoria = buscarCategoria(atualizandoProduto.categoriaId());
+        verificarDuplicidade(produto, request);
+        Categoria categoria = buscarCategoria(request.categoriaId());
+
+        produto.setNome(request.nome());
+        produto.setPreco(request.preco());
+        produto.setDescricao(request.descricao());
+        produto.setQuantidadeEstoque(request.quantidadeEstoque());
         produto.setCategoria(categoria);
 
-        Produto produtoAtualizado = repository.save(produto);
-        return converterParaResponse(produtoAtualizado);
+        return converterParaResponse(repository.save(produto));
     }
 
-    public ProdutoResponse buscarPorId(Long id) { //Para o usuário
+    public ProdutoResponse buscarPorId(Long id) {
         return converterParaResponse(buscarEntidade(id));
     }
 
@@ -67,7 +64,9 @@ public class ProdutoService {
         repository.delete(produto);                   
     }
 
-    private Produto converterParaProduto(ProdutoRequest request, Categoria categoria) {
+    private Produto converterParaProduto(ProdutoRequest request) {
+        Categoria categoria = buscarCategoria(request.categoriaId());
+
         return new Produto(
             request.nome(),
             request.preco(),
@@ -78,9 +77,7 @@ public class ProdutoService {
     }
 
     private ProdutoResponse converterParaResponse(Produto produto){
-        Long categoriaId = produto.getCategoria() != null
-            ? produto.getCategoria().getId()
-            : null;
+        Long categoriaId = produto.getCategoria().getId();
 
         return new ProdutoResponse (
             produto.getId(),
@@ -112,8 +109,8 @@ public class ProdutoService {
     }
 
     private void verificarDuplicidade(Produto produto, ProdutoRequest request) {
-    if(!produto.getNome().equals(request.nome())) {
-        verificarDuplicidade(request);
+        if(!produto.getNome().equals(request.nome())) {
+            verificarDuplicidade(request);
+        }
     }
-}
 }
