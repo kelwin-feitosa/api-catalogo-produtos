@@ -1,17 +1,32 @@
 package com.exemplo.meu_primeiro_projeto.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
-public class Fornecedor { //O fornecedor
+public class Fornecedor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "fornecedor")
+    private List<Compra> compras = new ArrayList<>();
+
+    //Consideremos que os produtos são de apenas um fornecedor
+    @OneToMany(mappedBy = "fornecedor") 
+    private List<Produto> produtos = new ArrayList<>();
+
     private String nome;
+
+    @Column(unique = true)
     private String cnpj;
     private String telefone;
 
@@ -23,8 +38,20 @@ public class Fornecedor { //O fornecedor
         this.telefone = telefone;
     }
 
+    public void atualizar(String nome, String cnpj, String telefone) {
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.telefone = telefone;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public List<Compra> getCompras() { return compras; }
+    public void setCompras(List<Compra> compras) { this.compras = compras; }
+
+    public List<Produto> getProdutos() { return produtos; }
+    public void setProdutos(List<Produto> produtos) { this.produtos = produtos; }
 
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
