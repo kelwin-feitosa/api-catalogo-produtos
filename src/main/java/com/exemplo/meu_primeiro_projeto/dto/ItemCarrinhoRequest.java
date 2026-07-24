@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Positive;
 
 public record ItemCarrinhoRequest(
     
+    @NotNull(message = "O carrinho é obrigatório.")
+    Long carrinhoId,
+    
     @NotNull(message = "O produto é obrigatório.")
     Long produtoId,
 
