@@ -2,8 +2,10 @@ package com.exemplo.meu_primeiro_projeto.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,8 +24,12 @@ public class Compra {  //Representando as compras feitas com o fornecedor
     @ManyToOne
     private Fornecedor fornecedor;
 
-    @OneToMany(mappedBy = "compra")
-    private List<ItemCompra> itens;
+    @OneToMany(
+    mappedBy = "compra",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+    )
+    private List<ItemCompra> itens = new ArrayList<>();;
 
     private LocalDateTime dataCompra;
     private BigDecimal valorTotal;
