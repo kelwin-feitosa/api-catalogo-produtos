@@ -44,9 +44,11 @@ public class ClienteService {
 
         verificarDuplicidade(cliente, request);
 
-        cliente.setNome(request.nome());
-        cliente.setEmail(request.email());
-        cliente.setTelefone(request.telefone());
+        cliente.atualizar(
+            request.nome(),
+            request.email(),
+            request.telefone()
+        );
 
         return converterParaResponse(repository.save(cliente));
     }
