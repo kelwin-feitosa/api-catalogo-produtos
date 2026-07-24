@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 
 @Entity
-public class Produto { //Os produtos
+public class Produto {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +40,15 @@ public class Produto { //Os produtos
     @PrePersist
     public void prePersist() {
         dataCadastro = LocalDateTime.now();
+    }
+
+    //Request para Produto
+    public void atualizar(String nome, BigDecimal preco, String descricao, Integer quantidadeEstoque, Categoria categoria) {
+        this.nome = nome;
+        this.preco = preco;
+        this.descricao = descricao;
+        this.quantidadeEstoque = quantidadeEstoque;
+        this.categoria = categoria;
     }
     
     public Long getId() { return this.id; }
