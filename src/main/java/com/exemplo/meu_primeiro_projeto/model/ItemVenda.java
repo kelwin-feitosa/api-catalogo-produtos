@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class ItemVenda { //itens da lista de venda do cliente
+public class ItemVenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,10 +27,15 @@ public class ItemVenda { //itens da lista de venda do cliente
 
     protected ItemVenda() {}
 
-    public ItemVenda(Integer quantidade, BigDecimal precoUnitario, BigDecimal subtotal) {
+    public ItemVenda(Produto produto, Integer quantidade, BigDecimal precoUnitario) {
+        this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
-        this.subtotal = subtotal;
+        this.subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+    }
+
+    private void atualizarSubtotal() {
+        this.subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
     }
 
     public Long getId() { return id; }
@@ -43,12 +48,16 @@ public class ItemVenda { //itens da lista de venda do cliente
     public void setVenda(Venda venda) { this.venda = venda; }
 
     public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public void setQuantidade(Integer quantidade) { 
+        this.quantidade = quantidade; 
+        atualizarSubtotal();
+    }
 
     public BigDecimal getPrecoUnitario() { return precoUnitario; }
-    public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }
+    public void setPrecoUnitario(BigDecimal precoUnitario) { 
+        this.precoUnitario = precoUnitario; 
+        atualizarSubtotal();
+    }
 
-    public BigDecimal getSubtotal() { return subtotal; }
-    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
-
+    public BigDecimal getSubtotal() { return this.subtotal; }
 }
