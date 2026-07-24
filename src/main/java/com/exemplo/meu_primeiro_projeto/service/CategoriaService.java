@@ -42,8 +42,10 @@ public class CategoriaService {
         // Se o nome mudou, verifica se já existe outra categoria com esse nome.
         verificarDuplicidade(categoria, request); 
 
-        categoria.setNome(request.nome());
-        categoria.setDescricao(request.descricao());
+        categoria.atualizar(
+            request.nome(),
+            request.descricao()
+        );
 
         return converterParaResponse(repository.save(categoria));
     }
