@@ -1,8 +1,10 @@
 # 🛒 API REST para Gerenciamento de Supermercado
 
-API REST desenvolvida com **Java 21** e **Spring Boot 3** com o objetivo de simular o gerenciamento de um supermercado. O projeto está sendo desenvolvido para aplicar boas práticas de desenvolvimento backend utilizando arquitetura em camadas, Spring Data JPA, Jakarta Validation e persistência de dados.
+API REST desenvolvida com **Java 21** e **Spring Boot 3** com o objetivo de simular um sistema de gerenciamento de supermercado.
 
-O sistema contempla o gerenciamento de **produtos, categorias, clientes, fornecedores, carrinhos de compras, compras e vendas**, sendo implementado de forma incremental.
+O projeto aplica boas práticas de desenvolvimento backend utilizando arquitetura em camadas, Spring Data JPA, Jakarta Validation, DTOs, tratamento global de exceções e regras de negócio.
+
+O sistema contempla o gerenciamento de **produtos, categorias, clientes, fornecedores, carrinhos de compras, compras e vendas**, sendo desenvolvido com foco em organização, escalabilidade e boas práticas utilizadas no mercado.
 
 ---
 
@@ -22,18 +24,18 @@ O sistema contempla o gerenciamento de **produtos, categorias, clientes, fornece
 
 A aplicação segue uma arquitetura em camadas:
 
-- **Controller** → expõe os endpoints REST.
-- **Service** → contém as regras de negócio.
-- **Repository** → comunicação com o banco de dados.
-- **Model** → entidades JPA.
+- **Controller** → responsável pela exposição dos endpoints REST.
+- **Service** → contém as regras de negócio da aplicação.
+- **Repository** → realiza a comunicação com o banco de dados utilizando Spring Data JPA.
+- **Model** → entidades persistidas utilizando JPA/Hibernate.
 - **DTO** → objetos utilizados para entrada e saída de dados.
-- **Exception Handler** → tratamento centralizado de erros.
+- **Exception Handler** → tratamento centralizado de erros e respostas padronizadas.
 
 ---
 
 # 📂 Modelagem do Sistema
 
-O sistema é composto pelas seguintes entidades:
+O sistema possui as seguintes entidades:
 
 - Categoria
 - Produto
@@ -46,15 +48,17 @@ O sistema é composto pelas seguintes entidades:
 - Venda
 - ItemVenda
 
-Relacionamentos principais:
+Principais relacionamentos:
 
-- Uma categoria possui vários produtos.
-- Um cliente possui um carrinho.
-- Um carrinho possui vários itens.
-- Uma compra pertence a um fornecedor.
-- Uma compra possui vários itens.
-- Uma venda pertence a um cliente.
-- Uma venda possui vários itens.
+- Uma **Categoria** possui vários produtos.
+- Um **Produto** pertence a uma categoria.
+- Um **Cliente** possui um carrinho.
+- Um **Carrinho** possui vários itens.
+- Um **ItemCarrinho** representa um produto dentro de um carrinho.
+- Uma **Venda** pertence a um cliente.
+- Uma **Venda** possui vários itens vendidos.
+- Uma **Compra** pertence a um fornecedor.
+- Uma **Compra** possui vários itens comprados.
 
 ---
 
@@ -67,17 +71,20 @@ Relacionamentos principais:
 - ✅ DTOs de Request e Response
 - ✅ Validação utilizando Jakarta Validation
 - ✅ CRUD de produtos
+- ✅ CRUD de categorias
+- ✅ CRUD de clientes
+- ✅ Gerenciamento de carrinho de compras
+- ✅ Adição de produtos ao carrinho
+- ✅ Alteração de quantidade dos itens
+- ✅ Remoção de itens do carrinho
+- ✅ Limpeza completa do carrinho
+- ✅ Cálculo automático de subtotal dos itens
+- ✅ Cálculo automático do valor total
+- ✅ Registro de vendas
+- ✅ Conversão de carrinho em venda
+- ✅ Baixa automática de estoque após venda
+- ✅ Validação de estoque disponível
 - ✅ Tratamento global de exceções
-
-## Em desenvolvimento
-
-- 🚧 CRUD de categorias
-- 🚧 CRUD de clientes
-- 🚧 CRUD de fornecedores
-- 🚧 Gerenciamento de carrinhos
-- 🚧 Registro de compras
-- 🚧 Registro de vendas
-- 🚧 Atualização automática do estoque
 
 ---
 
@@ -85,22 +92,49 @@ Relacionamentos principais:
 
 Os dados recebidos pela API são validados utilizando **Jakarta Validation**.
 
-Exemplos de validações implementadas:
+Validações implementadas:
 
 - Campos obrigatórios
+- Valores positivos
 - E-mail válido
 - CNPJ com formato correto
-- Valores positivos
 - Estoque não negativo
-- Tamanho máximo para textos
+- Limitação de tamanho de campos
+- Validação de quantidade de produtos
+
+---
+
+# 📦 Regras de Negócio
+
+Algumas regras implementadas:
+
+### Carrinho
+
+- Um cliente pode possuir um carrinho.
+- Produtos adicionados ao carrinho possuem quantidade e preço registrado.
+- Caso o produto já exista no carrinho, sua quantidade é atualizada.
+- Não é permitido adicionar quantidade superior ao estoque disponível.
+
+### Venda
+
+- Não é possível finalizar uma venda com carrinho vazio.
+- Ao realizar uma venda:
+  - Os itens do carrinho são transformados em itens da venda.
+  - O estoque dos produtos é atualizado automaticamente.
+  - O carrinho é limpo após a conclusão.
+
+### Estoque
+
+- O sistema verifica disponibilidade antes de adicionar ou vender produtos.
+- A baixa do estoque ocorre automaticamente após uma venda.
 
 ---
 
 # ❌ Tratamento de Erros
 
-A API possui tratamento global de exceções para retornar respostas padronizadas.
+A API possui tratamento global de exceções utilizando `@ControllerAdvice`.
 
-Exemplo:
+Exemplo de resposta:
 
 ```json
 {
@@ -108,51 +142,128 @@ Exemplo:
   "detalhes": "O preço deve ser maior que zero.",
   "timestamp": "2026-07-09T20:05:32"
 }
+
 ```
+
+Exceções tratadas:
+
+- Produto não encontrado
+- Categoria não encontrada
+- Cliente não encontrado
+- Fornecedor não encontrado
+- Carrinho não encontrado
+- Item do carrinho não encontrado
+- Venda não encontrada
+- Produto já existente
+- Categoria já existente
+- Cliente já cadastrado
+- CNPJ já cadastrado
+- Estoque insuficiente
+- Carrinho vazio
+- Erros de validação
+- JSON inválido
 
 ---
 
 # 🌐 Endpoints
 
-Atualmente a API possui endpoints para gerenciamento de produtos.
+## Produtos
 
 | Método | Endpoint | Descrição |
 |---------|----------|-----------|
-| GET | /api/produtos | Lista todos os produtos |
-| GET | /api/produtos/{id} | Busca um produto por ID |
-| POST | /api/produtos | Cadastra um produto |
-| PUT | /api/produtos/{id} | Atualiza um produto |
-| DELETE | /api/produtos/{id} | Remove um produto |
-
-Novos endpoints serão adicionados conforme o desenvolvimento das demais funcionalidades.
+| GET | `/produtos` | Lista todos os produtos |
+| GET | `/produtos/{id}` | Busca produto por ID |
+| POST | `/produtos` | Cadastra um produto |
+| PUT | `/produtos/{id}` | Atualiza um produto |
+| DELETE | `/produtos/{id}` | Remove um produto |
 
 ---
 
-# 📥 Exemplo de Requisição
+## Carrinhos
+
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| POST | `/carrinhos/{idCliente}` | Cria um carrinho para um cliente |
+| POST | `/carrinhos/itens` | Adiciona produto ao carrinho |
+| PUT | `/carrinhos/itens` | Altera quantidade de um item |
+| DELETE | `/carrinhos/itens` | Remove item do carrinho |
+| DELETE | `/carrinhos/{idCarrinho}` | Limpa todos os itens do carrinho |
+
+---
+
+## Vendas
+
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| POST | `/vendas/{idCarrinho}` | Finaliza uma venda utilizando o carrinho |
+| GET | `/vendas/{idVenda}` | Busca uma venda por ID |
+| GET | `/vendas` | Lista todas as vendas |
+
+---
+
+# 📥 Exemplos de Requisição
+
+## Cadastro de Produto
 
 ```json
 {
-  "nome": "Teclado Mecânico RGB",
-  "preco": 299.90,
-  "descricao": "Teclado mecânico ABNT2 com iluminação RGB",
-  "quantidadeEstoque": 15,
+  "nome": "Arroz 5kg",
+  "preco": 29.90,
+  "descricao": "Arroz branco tipo 1",
+  "quantidadeEstoque": 50,
   "categoriaId": 1
 }
 ```
 
 ---
 
-# 📤 Exemplo de Resposta
+## Adicionar Produto ao Carrinho
+
+```json
+{
+  "carrinhoId": 1,
+  "produtoId": 1,
+  "quantidade": 2
+}
+```
+
+---
+
+# 📤 Exemplos de Respostas
+
+## Produto
 
 ```json
 {
   "id": 1,
-  "nome": "Teclado Mecânico RGB",
-  "preco": 299.90,
-  "descricao": "Teclado mecânico ABNT2 com iluminação RGB",
-  "quantidadeEstoque": 15,
+  "nome": "Arroz 5kg",
+  "preco": 29.90,
+  "descricao": "Arroz branco tipo 1",
+  "quantidadeEstoque": 50,
   "categoriaId": 1,
   "dataCadastro": "2026-07-15T14:30:52"
+}
+```
+
+---
+
+## Venda
+
+```json
+{
+  "id": 1,
+  "clienteId": 1,
+  "dataVenda": "2026-07-23T15:30:00",
+  "valorTotal": 59.80,
+  "itens": [
+    {
+      "produtoId": 1,
+      "nomeProduto": "Arroz 5kg",
+      "quantidade": 2,
+      "precoUnitario": 29.90,
+      "subtotal": 59.80
+    }
+  ]
 }
 ```
 
@@ -162,23 +273,38 @@ Novos endpoints serão adicionados conforme o desenvolvimento das demais funcion
 
 Este projeto tem como objetivo aprofundar conhecimentos em:
 
+- Desenvolvimento backend com Java
 - Spring Boot
 - Spring Data JPA
+- Hibernate
 - Arquitetura em camadas
 - Modelagem de banco de dados relacional
+- Desenvolvimento de APIs REST
 - DTOs
 - Validação de dados
 - Tratamento de exceções
-- Boas práticas no desenvolvimento de APIs REST
+- Regras de negócio
+- Boas práticas de programação
 
 ---
 
 # 🚀 Próximos Passos
 
-- Implementar Services
-- Implementar Controllers
-- Implementar CRUD completo de todas as entidades
-- Atualizar estoque automaticamente em compras e vendas
+- Implementar gerenciamento de fornecedores
+- Implementar registro de compras
+- Atualizar estoque através de compras
 - Adicionar documentação com Swagger/OpenAPI
 - Criar testes unitários
-- Migrar do H2 para PostgreSQL
+- Criar testes de integração
+- Adicionar autenticação e autorização com Spring Security
+- Migrar banco H2 para PostgreSQL
+- Criar ambiente Docker
+- Preparar deploy da aplicação
+
+---
+
+# 👨‍💻 Autor
+
+Kelwin
+
+Projeto desenvolvido para estudo e evolução profissional na área de desenvolvimento backend utilizando Java e Spring Boot.
