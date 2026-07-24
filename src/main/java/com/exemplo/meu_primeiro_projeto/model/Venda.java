@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,7 +14,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Venda { //A venda feita com o cliente
+public class Venda { //A venda feita pro cliente
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,11 @@ public class Venda { //A venda feita com o cliente
     @ManyToOne
     private Cliente cliente;
 
-    @OneToMany(mappedBy="venda")
+    @OneToMany(
+    mappedBy = "venda",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+    )
     private List<ItemVenda> itens = new ArrayList<>();
 
     private LocalDateTime dataVenda;
@@ -30,9 +35,14 @@ public class Venda { //A venda feita com o cliente
 
     protected Venda() {}
 
-    public Venda(LocalDateTime dataVenda, BigDecimal valorTotal) {
-        this.dataVenda = dataVenda;
-        this.valorTotal = valorTotal;
+    public Venda(Cliente cliente) {
+        this.cliente = cliente;
+        this.dataVenda = LocalDateTime.now();
+    }
+
+    public void adicionarItem(ItemVenda itemVenda) {
+        itemVenda.setVenda(this);
+        this.itens.add(itemVenda);
     }
 
     public Long getId() { return id; }
