@@ -46,11 +46,13 @@ public class ProdutoService {
         verificarDuplicidade(produto, request);
         Categoria categoria = buscarCategoria(request.categoriaId());
 
-        produto.setNome(request.nome());
-        produto.setPreco(request.preco());
-        produto.setDescricao(request.descricao());
-        produto.setQuantidadeEstoque(request.quantidadeEstoque());
-        produto.setCategoria(categoria);
+        produto.atualizar(
+            request.nome(),
+            request.preco(),
+            request.descricao(),
+            request.quantidadeEstoque(),
+            categoria
+        );
 
         return converterParaResponse(repository.save(produto));
     }
