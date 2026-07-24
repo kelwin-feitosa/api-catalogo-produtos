@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
             ex.getMessage(),
             LocalDateTime.now()
         );
+        
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
@@ -55,6 +56,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
+    @ExceptionHandler(CarrinhoNaoEncontradoException.class)
+    public ResponseEntity<RespostaErro> tratarCarrinhoNaoEncontrado(CarrinhoNaoEncontradoException ex) {
+        RespostaErro erro = new RespostaErro(
+            "Carrinho não encontrado.",
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+    }
+
     @ExceptionHandler(ProdutoJaExisteException.class)
     public ResponseEntity<RespostaErro> tratarProdutoJaExistente(ProdutoJaExisteException ex) {
         RespostaErro erro = new RespostaErro(
@@ -64,6 +76,28 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
+
+    @ExceptionHandler(ItemCarrinhoNaoEncontradoException.class)
+    public ResponseEntity<RespostaErro> tratarItemCarrinhoNaoEncontrado(ItemCarrinhoNaoEncontradoException ex) {
+        RespostaErro erro = new RespostaErro(
+            "Item não encontrado no carrinho.",
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+    }
+
+    @ExceptionHandler(VendaNaoEncontradaException.class)
+    public ResponseEntity<RespostaErro> tratarVendaNaoEncontrada(VendaNaoEncontradaException ex) {
+        RespostaErro erro = new RespostaErro(
+            "Venda não encontrada.",
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
     @ExceptionHandler(CategoriaJaExisteException.class)
@@ -97,6 +131,28 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(erro);
+    }
+
+    @ExceptionHandler(CarrinhoVazioException.class)
+    public ResponseEntity<RespostaErro> tratarCarrinhoVazio(CarrinhoVazioException ex) {
+        RespostaErro erro = new RespostaErro(
+            "Carrinho vazio.",
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    }
+
+    @ExceptionHandler(EstoqueInsuficienteException.class)
+    public ResponseEntity<RespostaErro> tratarEstoqueInsuficiente(EstoqueInsuficienteException ex) {
+        RespostaErro erro = new RespostaErro(
+            "Estoque insuficiente.",
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
