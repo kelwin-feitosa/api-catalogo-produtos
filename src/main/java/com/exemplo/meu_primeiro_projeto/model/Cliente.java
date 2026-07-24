@@ -35,6 +35,13 @@ public class Cliente {
         this.telefone = telefone;
     }
 
+    //Request para Cliente
+    public void atualizar(String nome, String email, String telefone) {
+        this.nome = nome;
+        this.email = email;
+        this.telefone = telefone;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
