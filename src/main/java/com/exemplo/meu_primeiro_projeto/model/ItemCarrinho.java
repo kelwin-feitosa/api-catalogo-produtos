@@ -23,6 +23,7 @@ public class ItemCarrinho {
 
     private Integer quantidade;
     private BigDecimal precoUnitario;
+    private BigDecimal subtotal;
 
 
     protected ItemCarrinho() { }
@@ -31,7 +32,14 @@ public class ItemCarrinho {
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
+        atualizarSubtotal();
     }
+
+
+    private void atualizarSubtotal() {
+        this.subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+    }
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -43,10 +51,17 @@ public class ItemCarrinho {
     public void setProduto(Produto produto) { this.produto = produto; }
 
     public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public void setQuantidade(Integer quantidade) { 
+        this.quantidade = quantidade; 
+        atualizarSubtotal();
+    }
 
     public BigDecimal getPrecoUnitario() { return precoUnitario; }
-    public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }
-
+    public void setPrecoUnitario(BigDecimal precoUnitario) { 
+        this.precoUnitario = precoUnitario; 
+        atualizarSubtotal();
+    }
     
+    public BigDecimal getSubtotal() { return subtotal; }
+
 }
