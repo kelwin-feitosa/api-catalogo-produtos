@@ -29,6 +29,12 @@ public class Categoria {
         this.descricao = descricao;
     }
 
+    //Request para Categoria
+    public void atualizar(String nome, String descricao) {
+        this.nome = nome;
+        this.descricao = descricao;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
